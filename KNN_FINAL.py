@@ -1,14 +1,6 @@
-# ============================================================
-# K-Nearest Neighbors (KNN) from Scratch
-# Fashion-MNIST Classification
-# ============================================================
-
 import numpy as np
 import matplotlib.pyplot as plt
 
-# ------------------------------------------------------------
-# Load CSV files
-# ------------------------------------------------------------
 train_data = np.loadtxt(
     "C:/Users/user/OneDrive/Desktop/opencode AIML/.dist/fashion-mnist_train.csv",
     delimiter=",",
@@ -37,9 +29,6 @@ class_names = [
 print("Train shape:", train_data.shape)
 print("Test shape:", test_data.shape)
 
-# ------------------------------------------------------------
-# Split features and labels
-# ------------------------------------------------------------
 y_train = train_data[:, 0].astype(int)
 X_train = train_data[:, 1:].astype(int)
 
@@ -49,24 +38,15 @@ X_test = test_data[:, 1:].astype(int)
 print("X_train:", X_train.shape, "y_train:", y_train.shape)
 print("X_test:", X_test.shape, "y_test:", y_test.shape)
 
-# ------------------------------------------------------------
-# Normalize pixel values
-# ------------------------------------------------------------
 X_train = X_train / 255.0
 X_test = X_test / 255.0
 
-# ------------------------------------------------------------
-# Sanity check visualization
-# ------------------------------------------------------------
 idx = 0
 plt.imshow(X_train[idx].reshape(28, 28), cmap="gray")
 plt.title(f"Label: {class_names[y_train[idx]]}")
 plt.axis("off")
 plt.show()
 
-# ------------------------------------------------------------
-# Distance functions (from scratch)
-# ------------------------------------------------------------
 def euclidean_distance(x1, x2):
     diff = x1 - x2
     return np.sqrt(np.sum(diff * diff))
@@ -75,9 +55,6 @@ def euclidean_distance(x1, x2):
 def manhattan_distance(x1, x2):
     return np.sum(np.abs(x1 - x2))
 
-# ------------------------------------------------------------
-# KNN Classifier (FROM SCRATCH)
-# ------------------------------------------------------------
 class KNN:
     def __init__(self, k=3, metric="euclidean"):
         self.k = k
@@ -120,34 +97,22 @@ class KNN:
 
         return np.array(predictions), np.array(confidences)
 
-# ------------------------------------------------------------
-# Reduce dataset size for speed
-# ------------------------------------------------------------
 X_train_small = X_train[:2000]
 y_train_small = y_train[:2000]
 
 X_test_small = X_test[:200]
 y_test_small = y_test[:200]
 
-# ------------------------------------------------------------
-# Train and predict
-# ------------------------------------------------------------
 knn = KNN(k=3, metric="euclidean")
 knn.fit(X_train_small, y_train_small)
 
 y_pred, y_conf = knn.predict(X_test_small)
 
-# ------------------------------------------------------------
-# Accuracy
-# ------------------------------------------------------------
 def accuracy(y_true, y_pred):
     return np.sum(y_true == y_pred) / len(y_true)
 
 print("Accuracy:", accuracy(y_test_small, y_pred))
 
-# ------------------------------------------------------------
-# Show a prediction with confidence
-# ------------------------------------------------------------
 i = 0
 plt.imshow(X_test_small[i].reshape(28,28), cmap="gray")
 plt.title(
@@ -158,9 +123,6 @@ plt.title(
 plt.axis("off")
 plt.show()
 
-# ------------------------------------------------------------
-# Misclassification analysis
-# ------------------------------------------------------------
 misclassified = np.where(y_test_small != y_pred)[0]
 print("Number of misclassified samples:", len(misclassified))
 
@@ -177,9 +139,6 @@ plt.title(
 plt.axis("off")
 plt.show()
 
-# ------------------------------------------------------------
-# Neighbor vote distribution (explainability)
-# ------------------------------------------------------------
 def neighbor_distribution(model, x):
     distances = []
 
@@ -201,9 +160,6 @@ print("Neighbor votes:")
 for k, v in dist.items():
     print(class_names[k], ":", v)
 
-# ------------------------------------------------------------
-# Effect of K
-# ------------------------------------------------------------
 print("\nEffect of K:")
 for k in [1, 3, 5, 7]:
     model = KNN(k=k, metric="euclidean")
@@ -211,9 +167,6 @@ for k in [1, 3, 5, 7]:
     preds, _ = model.predict(X_test_small)
     print(f"K={k}, Accuracy={accuracy(y_test_small, preds):.3f}")
 
-# ------------------------------------------------------------
-# Distance metric comparison
-# ------------------------------------------------------------
 print("\nDistance Metric Comparison:")
 for metric in ["euclidean", "manhattan"]:
     model = KNN(k=3, metric=metric)
@@ -221,9 +174,6 @@ for metric in ["euclidean", "manhattan"]:
     preds, _ = model.predict(X_test_small)
     print(f"Metric={metric}, Accuracy={accuracy(y_test_small, preds):.3f}")
 
-# ------------------------------------------------------------
-# Confusion Matrix (NO sklearn)
-# ------------------------------------------------------------
 conf_matrix = np.zeros((10, 10), dtype=int)
 
 for true, pred in zip(y_test_small, y_pred):
@@ -236,20 +186,12 @@ plt.ylabel("Actual")
 plt.title("Confusion Matrix")
 plt.show()
 
-# ------------------------------------------------------------
-# Class-wise accuracy
-# ------------------------------------------------------------
 print("\nClass-wise Accuracy:")
 for cls in range(10):
     idxs = np.where(y_test_small == cls)[0]
     acc = np.sum(y_pred[idxs] == cls) / len(idxs)
     print(f"{class_names[cls]:12s}: {acc:.2f}")
 
-
-
-# ------------------------------------------------------------
-# Visualize K Nearest Neighbors for a random test sample
-# ------------------------------------------------------------
 
 import random
 
@@ -275,9 +217,6 @@ neighbors = get_k_neighbors(knn, query_img)
 # Prediction
 pred_label, conf = knn.predict_one(query_img)
 
-# ------------------------------------------------------------
-# Plot query + neighbors
-# ------------------------------------------------------------
 plt.figure(figsize=(12, 3))
 
 # Query image
@@ -305,4 +244,5 @@ plt.suptitle(
     fontsize=14
 )
 plt.show()
+
 
