@@ -206,20 +206,16 @@ def get_k_neighbors(model, x):
     return distances[:model.k]
 
 
-# Pick a random test image
 rand_idx = random.randint(0, len(X_test_small) - 1)
 query_img = X_test_small[rand_idx]
 true_label = y_test_small[rand_idx]
 
-# Get neighbors
 neighbors = get_k_neighbors(knn, query_img)
 
-# Prediction
 pred_label, conf = knn.predict_one(query_img)
 
 plt.figure(figsize=(12, 3))
 
-# Query image
 plt.subplot(1, knn.k + 1, 1)
 plt.imshow(query_img.reshape(28, 28), cmap="gray")
 plt.title(
@@ -229,7 +225,6 @@ plt.title(
 )
 plt.axis("off")
 
-# Neighbor images
 for i, (dist, img, label) in enumerate(neighbors):
     plt.subplot(1, knn.k + 1, i + 2)
     plt.imshow(img.reshape(28, 28), cmap="gray")
@@ -244,5 +239,6 @@ plt.suptitle(
     fontsize=14
 )
 plt.show()
+
 
 
